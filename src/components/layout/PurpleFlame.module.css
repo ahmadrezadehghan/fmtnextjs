@@ -1,0 +1,208 @@
+/* src/components/layout/PurpleFlame.module.css */
+
+:root {
+  --flame-color: rgba(216, 180, 254, 0.8);
+  --spark-color: rgb(216, 180, 254);
+  --spark-glow-color: rgb(147, 51, 234);
+}
+
+.flameWrapper {
+  --wind-angle: 0deg;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  transform: rotate(180deg);
+  background: linear-gradient(to top, rgba(88, 28, 135, 0.15), transparent);
+}
+
+.continuousFlame {
+  background: linear-gradient(
+    to top,
+    rgba(147, 51, 234, 0.4) 0%,
+    rgba(147, 51, 234, 0.1) 50%,
+    transparent 100%
+  );
+  filter: blur(20px);
+  transform-origin: bottom;
+  animation: baseFlame 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.flameSection {
+  position: absolute;
+  bottom: 0;
+  width: 6%;
+  transform: translateX(-50%);
+}
+
+.flame {
+  width: 3px;
+  height: 3px;
+  opacity: 0.8;
+  background: var(--flame-color);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  animation: flameRise 4s ease-out infinite;
+  will-change: transform, opacity;
+  position: relative; /* Needed for ::before */
+}
+
+.flame::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgb(147, 51, 234),
+    rgb(168, 85, 247),
+    rgb(192, 132, 252),
+    transparent
+  );
+  filter: blur(2px); /* Reduced blur for performance */
+  transform-origin: bottom;
+  animation: flameFlicker 1s ease-out infinite alternate;
+}
+
+.spark {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--spark-color);
+  border-radius: 50%;
+  filter: blur(1px);
+  animation: sparkFloat ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.fireWrapperAfter {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -10%;
+  right: -10%;
+  height: 30px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(147, 51, 234, 0.4) 0%,
+    rgba(147, 51, 234, 0.1) 70%
+  );
+  filter: blur(10px);
+  animation: glowPulse 4s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.flameSection::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  right: -100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(147, 51, 234, 0.2) 0%,
+    transparent 70%
+  );
+  filter: blur(6px); /* Reduced blur for performance */
+}
+
+/* Keyframes */
+@keyframes baseFlame {
+  0%,
+  100% {
+    transform: rotate(calc(var(--wind-angle) * 0.3));
+  }
+  50% {
+    transform: rotate(calc(var(--wind-angle) * 0.5));
+  }
+}
+
+@keyframes flameRise {
+  0% {
+    height: 3px;
+    opacity: 0.8;
+    transform: translateX(0) translateY(0);
+  }
+  33% {
+    height: calc(var(--max-height) * 0.4px);
+    opacity: 1;
+    transform:
+      translateX(calc(var(--curve-x1) * 1px))
+      translateY(calc(var(--curve-y1) * 1px))
+      rotate(calc(var(--wind-angle) * 1deg));
+  }
+  66% {
+    height: calc(var(--max-height) * 0.7px);
+    opacity: 0.7;
+    transform:
+      translateX(calc(var(--curve-x2) * 1px))
+      translateY(calc(var(--curve-y2) * 1px))
+      rotate(calc(var(--wind-angle) * 1.5deg));
+  }
+  100% {
+    height: calc(var(--max-height) * 1px);
+    opacity: 0;
+    transform:
+      translateX(calc(var(--curve-x3) * 1px))
+      translateY(calc(var(--curve-y3) * 1px))
+      rotate(calc(var(--wind-angle) * 2deg))
+      scale(0.2);
+  }
+}
+
+@keyframes flameFlicker {
+  0% {
+    transform: scaleY(1) scaleX(1) rotate(calc(var(--wind-angle) * 0.2deg));
+  }
+  100% {
+    transform: scaleY(0.9) scaleX(0.9) rotate(calc(var(--wind-angle) * 0.3deg));
+  }
+}
+
+@keyframes sparkFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(
+      calc(var(--spark-curve-x1) * 1px),
+      calc(var(--spark-curve-y1) * 1px)
+    );
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(
+      calc(var(--spark-curve-x2) * 1px),
+      calc(var(--spark-curve-y2) * 1px)
+    ) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.3;
+    transform: scaleY(0.8);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scaleY(1.2);
+  }
+}
+
+/* Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .flameWrapper,
+  .continuousFlame,
+  .flame,
+  .flame::before,
+  .spark,
+  .fireWrapperAfter,
+  .flameSection::before {
+    animation: none;
+  }
+}

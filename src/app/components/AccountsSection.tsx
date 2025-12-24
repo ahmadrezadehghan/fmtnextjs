@@ -1,6 +1,5 @@
 "use client";
 
-// src/app/components/AccountsSection.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -9,80 +8,127 @@ interface Account {
     title: string;
     description: string;
     link: string;
-    gradient: string;
+    accent: string;
+    innerShadowColor: string;
 }
 
 const accounts: Account[] = [
     {
         key: 'Standard',
         title: 'Standard Account',
-        description:
-            'A great account for all types of traders, with floating FMT broker spreads from 1.2 pips via MT4/MT5 and micro lot trading available.',
+        description: 'Ideal for balanced market entry. Access institutional liquidity with floating FMT spreads starting from 1.2 pips. Benefit from micro-lot trading capabilities across MT4/MT5, ensuring high-speed execution for retail strategies without the high entry barriers.',
         link: 'https://direct.FMT.group/en/register/ua/cri/2y6ueacdr',
-        gradient: 'from-cyan-400 to-indigo-500',
+        accent: 'from-[#00ffcc] to-[#00d0ff]',
+        innerShadowColor: 'rgba(0, 255, 204, 0.15)',
     },
     {
         key: 'ECN',
         title: 'ECN Account',
-        description:
-            'Trade like a pro with our ECN account, offering tight spreads from 0.0 pips, fast execution, and low commissions (up to $3.50 per lot, per side) on MT4/MT5.',
+        description: 'Engineered for the professional trader. Experience direct market access with raw spreads from 0.0 pips. Our ECN infrastructure ensures ultra-low latency execution and deep liquidity pooling, providing a transparent trading environment with competitive commission structures.',
         link: 'https://direct.FMT.group/en/register/ua/cri/2y6ueacdr',
-        gradient: 'from-blue-400 to-indigo-500',
-
+        accent: 'from-[#00d0ff] to-[#bf40ff]',
+        innerShadowColor: 'rgba(0, 208, 255, 0.15)',
     },
     {
         key: 'Ecn Pro',
         title: 'Ecn Pro Account',
-        description:
-            'Enjoy ZERO spreads for 90%+ of the day, low commissions, and earn rebates up to 21% of your commissions on MT4/MT5.',
+        description: 'The pinnacle of high-frequency trading. Enjoy zero-spread consistency for over 90% of the trading day. This account is optimized for volume-heavy strategies, offering an exclusive rebate program that returns up to 21% of your commissions directly to your balance.',
         link: 'https://direct.FMT.group/en/register/ua/cri/2y6ueacdr',
-        gradient: 'from-indigo-500 to-purple-400',
+        accent: 'from-[#bf40ff] to-[#ff4081]',
+        innerShadowColor: 'rgba(191, 64, 255, 0.15)',
     },
     {
         key: 'Elite',
         title: 'Elite Account',
-        description:
-            'Enjoy ZERO spreads for 90%+ of the day, low commissions, and earn rebates up to 25% of your commissions on MT4/MT5 plus low commission (max $2.5 per lot per side) on MT4/MT5.',
+        description: 'Our most prestigious tier for institutional-grade performance. Featuring absolute zero spreads and a heavily discounted commission of just $2.5 per lot. Elite holders maximize profitability with our highest rebate tier of 25%, tailored for high-net-worth portfolio management.',
         link: 'https://direct.FMT.group/en/register/ua/cri/2y6ueacdr',
-        gradient: 'from-purple-400 to-purple-800',
+        accent: 'from-[#bf40ff] via-[#00d0ff] to-[#00ffcc]',
+        innerShadowColor: 'rgba(0, 208, 255, 0.2)',
     },
-
 ];
 
 export default function AccountsSection() {
     return (
-        <section className="py-16 bg-gradient-to-b from-gray-900 to-black text-white">
-            <div className="w-full px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <section className="py-24 bg-transparent text-white overflow-hidden">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter">
+                        Select Your <span className="text-[#00ffcc]">Trading Power</span>
+                    </h2>
+                    <p className="text-white/40 text-lg max-w-2xl mx-auto font-light">
+                        Tailored accounts designed for institutional performance and retail flexibility.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {accounts.map((acc, idx) => (
                         <motion.div
                             key={acc.key}
-                            whileHover={{ scale: 1.03 }}
-                            transition={{ type: 'spring', stiffness: 200 }}
-                            className={`relative w-full p-8 mx-4 bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl shadow-lg before:absolute before:left-0 before:top-0 before:h-full before:w-2 before:bg-gradient-to-b ${acc.gradient} overflow-hidden`}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
+                            whileHover={{ y: -12 }}
+                            className="group relative h-full"
                         >
-                            <div className="flex justify-between items-center mb-4">
-                                <span
-                                    className={`px-4 py-1 text-xs font-semibold uppercase tracking-wide bg-gradient-to-r ${acc.gradient} rounded-full`}
-                                >
-                                    {acc.key}
-                                </span>
-                                <div className="text-4xl font-bold opacity-10">{idx + 1}</div>
-                            </div>
-                            <h3 className="text-2xl font-bold mb-2">{acc.title}</h3>
-                            <p className="text-sm leading-relaxed mb-4">{acc.description}</p>
-                            <a
-                                href={acc.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`inline-block px-6 py-2 text-sm font-semibold rounded-full bg-gradient-to-r ${acc.gradient} text-white uppercase tracking-wide transition-transform hover:scale-105`}
+                            {/* OUTER GLOW (Hover Only) */}
+                            <div className={`absolute -inset-1 bg-gradient-to-br ${acc.accent} rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
+
+                            <div
+                                // Added min-h-[550px] and increased py-12 to add height
+                                className="relative h-full min-h-[550px] p-8 py-12 bg-[#0a0a0a]/40 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] flex flex-col justify-between overflow-hidden transition-all duration-500 group-hover:border-white/20 group-hover:bg-white/[0.02]"
+                                style={{
+                                    boxShadow: `inset 0 20px 40px ${acc.innerShadowColor}, inset 0 -20px 40px ${acc.innerShadowColor}`
+                                }}
                             >
-                                Open Account
-                            </a>
+                                {/* Glass Shimmer Effect */}
+                                <div className="absolute inset-0 translate-x-[-100%] group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-10">
+                                        <span className={`px-4 py-1 text-[10px] font-black uppercase tracking-[0.2em] bg-gradient-to-r ${acc.accent} rounded-md text-black`}>
+                                            {acc.key}
+                                        </span>
+                                        <div className="text-4xl font-black text-white/[0.05] group-hover:text-white/10 transition-colors">
+                                            0{idx + 1}
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-black mb-6 tracking-tight group-hover:text-white transition-colors uppercase italic leading-none">
+                                        {acc.title}
+                                    </h3>
+
+                                    {/* Expanded Text Section */}
+                                    <p className="text-sm text-white/50 leading-relaxed mb-8 font-light group-hover:text-white/70 transition-colors">
+                                        {acc.description}
+                                    </p>
+                                </div>
+
+                                <div className="relative z-10 pt-4">
+                                    <a
+                                        href={acc.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="relative flex items-center justify-center w-full py-5 text-xs font-black rounded-xl border border-white/10 bg-white/5 group-hover:border-transparent transition-all group/btn overflow-hidden"
+                                    >
+                                        <span className="relative z-10 uppercase tracking-[0.2em]">Open Account</span>
+                                        <div className={`absolute inset-0 translate-y-full group-hover/btn:translate-y-0 bg-gradient-to-r ${acc.accent} transition-transform duration-500`} />
+                                    </a>
+                                </div>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
             </div>
+
+            <style>{`
+                @keyframes shimmer {
+                    100% { transform: translateX(100%); }
+                }
+                .animate-shimmer {
+                    animation: shimmer 2s infinite linear;
+                }
+            `}</style>
         </section>
     );
 }

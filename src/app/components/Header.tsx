@@ -1,183 +1,198 @@
 "use client";
-import Link from 'next/link';
-import { useState, useRef } from 'react';
 
-interface SubMenuItem {
-    icon: string;
-    title: string;
-    desc: string;
-    href: string;
-}
-interface NavItem {
-    label: string;
-    href: string;
-    items: SubMenuItem[];
-}
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
-const NAV_ITEMS: NavItem[] = [
-    {
-        label: 'Accounts',
-        href: '/accounts',
-        items: [
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/user-group.svg', title: 'Standard', desc: 'Trade with standard conditions for all experience levels', href: '/accounts/standard' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/chart-bar.svg', title: 'ECN', desc: 'Access deep liquidity and tighter spreads for fast trades', href: '/accounts/ecn' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/chart-pie.svg', title: 'ECN Pro', desc: 'Professional-grade ECN with lower spreads for expert traders', href: '/accounts/ecn-pro' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/star.svg', title: 'ECN Elite', desc: 'Elite ECN access with VIP treatment and ultra-low spreads', href: '/accounts/ecn-elite' },
-        ],
-    },
-    {
-        label: 'Meta Trader',
-        href: '/platforms/meta-trader',
-        items: [
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/wrench-screwdriver.svg', title: 'MetaTrader 4', desc: 'Classic platform with fast execution and essential tools', href: '/platforms/mt4' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/chart-bar-square.svg', title: 'MetaTrader 5', desc: 'Multi-asset platform with advanced features', href: '/platforms/mt5' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/arrows-right-left.svg', title: 'Compare Platforms', desc: 'Find the platform that suits you best', href: '/platforms/compare' },
-        ],
-    },
-    {
-        label: 'FMT Trade',
-        href: '/fmt-trade',
-        items: [
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/chart-pie.svg', title: 'FMT Trade', desc: 'Trade on FMT with advanced charts, real-time data, and tools', href: '/fmt-trade' },
-        ],
-    },
-    {
-        label: 'Blog',
-        href: '/blog',
-        items: [],
-    },
-    {
-        label: 'Start Trading',
-        href: '/start-trading',
-        items: [
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/arrows-pointing-in-out.svg', title: 'Compare all Accounts', desc: 'Find the right trading option across all FMT accounts', href: '/accounts/compare' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/currency-dollar.svg', title: 'Deposit/Withdraw', desc: 'Explore your transaction options', href: '/support/deposit' },
-        ],
-    },
-    {
-        label: 'Help',
-        href: '/help',
-        items: [
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/chat-alt-2.svg', title: 'Repetitive Questions', desc: 'Find answers to common inquiries', href: '/help/faq' },
-            { icon: 'https://unpkg.com/heroicons@2.0.13/24/outline/support.svg', title: 'Support Team', desc: 'Contact our support team for assistance', href: '/help/support' },
-        ],
-    },
-    {
-        label: 'About Us',
-        href: '/about',
-        items: [],
-    },
-
-];
+const NAV_DATA = {
+    Products: [
+        { title: "Supercharts", desc: "Advanced financial visualization" },
+        { title: "Screeners", desc: "Filter stocks and crypto" },
+        { title: "Economic Calendar", desc: "Key global events" },
+        { title: "News", desc: "Real-time market updates" },
+    ],
+    Community: [
+        { title: "Ideas", desc: "Daily trading setups" },
+        { title: "Scripts", desc: "Custom indicators & strategies" },
+        { title: "Streams", desc: "Watch experts trade live" },
+        { title: "Trade Wall", desc: "Community sentiment" },
+    ],
+    Markets: [
+        { title: "Crypto", desc: "Bitcoin and Altcoins" },
+        { title: "Forex", desc: "Global currency pairs" },
+        { title: "Stocks", desc: "US and Global equities" },
+        { title: "Indices", desc: "S&P 500, Nasdaq, DAX" },
+    ],
+    Brokers: [
+        { title: "Top Rated", desc: "Best overall platforms" },
+        { title: "Comparison", desc: "Side-by-side analysis" },
+        { title: "User Reviews", desc: "Verified trader feedback" },
+        { title: "Broker Awards", desc: "2024 industry winners" },
+    ]
+};
 
 export default function Header() {
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [open, setOpen] = useState(false);
 
-    const handleMouseEnter = (idx: number) => {
-        if (closeTimer.current) clearTimeout(closeTimer.current);
-        setOpenIndex(idx);
-    };
-
-    const handleMouseLeave = () => {
-        if (closeTimer.current) clearTimeout(closeTimer.current);
-        closeTimer.current = setTimeout(() => setOpenIndex(null), 500);
-    };
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [open]);
 
     return (
-        <header className="sticky top-0 z-50 bg-black bg-opacity-70 backdrop-blur-xl shadow-xl">
-            <div className="container max-w-full mx-auto px-2 sm:px-4 lg:px-6 py-4 flex justify-between items-center">
-                {/* Logo */}
-                <Link href="/" className="flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-300 to-indigo-400 font-extrabold tracking-tight text-5xl mx-4">
-                    FMT Broker
-                </Link>
+        <>
+            <header className="fixed top-0 left-0 right-0 z-[100] h-[70px] bg-[#000000] flex items-center border-b border-[#2a2e39]">
+                <div className="w-full max-w-[1440px] mx-auto px-6 flex items-center justify-between gap-4 md:gap-10">
 
-                {/* Desktop nav & auth */}
-                <div className="hidden md:flex items-center space-x-8">
-                    <nav className="flex space-x-8">
-                        {NAV_ITEMS.map((menu, idx) => (
-                            <div key={menu.label} className="relative text-center mx-4" onMouseEnter={() => handleMouseEnter(idx)} onMouseLeave={handleMouseLeave}>
-                                <Link href={menu.href} className="group flex items-center text-xl font-semibold text-white hover:text-blue-300 transition px-4">
-                                    {menu.label}
-                                    {menu.items.length > 0 && (
-                                        <span className="ml-1 text-sm text-white group-hover:text-blue-300 transition">▼</span>
-                                    )}
-                                </Link>
-                                {menu.items.length > 0 && openIndex === idx && (
-                                    <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-white rounded-2xl shadow-2xl transition-all duration-300 z-50 mx-4" onMouseEnter={() => clearTimeout(closeTimer.current!)} onMouseLeave={handleMouseLeave}>
-                                        <div className="p-6 space-y-4 text-center">
-                                            {menu.items.map(item => (
-                                                <Link key={item.title} href={item.href} className="group flex flex-col items-center space-y-2 hover:bg-gray-100 p-4 rounded-lg transition mx-4">
-                                                    <img src={item.icon} alt={item.title} className="w-10 h-10 group-hover:text-blue-300 transition" />
-                                                    <h4 className="text-lg font-semibold text-gray-900 group-hover:text-blue-300 transition">{item.title}</h4>
-                                                    <p className="text-base text-gray-600 group-hover:text-blue-300 transition">{item.desc}</p>
+                    {/* LEFT: Branded Logo */}
+                    <div className="flex-shrink-0">
+                        <Link href="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
+                            {/* <div className="w-10 h-10 bg-[#131722] rounded-lg flex items-center justify-center border border-[#2a2e39] shadow-lg shadow-white/5">
+                                <svg viewBox="0 0 28 28" className="w-6 h-6 fill-white">
+                                    <path d="M4 4h20v20H4V4zm5 5v2h10V9H9zm0 4v2h10v-2H9zm0 4v2h6v-2H9z" />
+                                </svg>
+                            </div> */}
+                            <div className="flex font-extrabold text-[22px] tracking-tighter hidden md:flex group">
+                                <span className="text-[#bf40ff] drop-shadow-[0_0_10px_rgba(191,64,255,0.8)] group-hover:drop-shadow-[0_0_15px_rgba(191,64,255,1)] transition-all">F</span>
+                                <span className="text-[#00d0ff] drop-shadow-[0_0_10px_rgba(0,208,255,0.8)] group-hover:drop-shadow-[0_0_15px_rgba(0,208,255,1)] transition-all">M</span>
+                                <span className="text-[#00ffcc] drop-shadow-[0_0_10px_rgba(0,255,204,0.8)] group-hover:drop-shadow-[0_0_15px_rgba(0,255,204,1)] transition-all">T</span>
+                                <span className="text-white ml-2">BROKER</span>
+                            </div>
+                        </Link>
+                    </div>
+
+                    {/* CENTER: Search & Nav with Dropdowns */}
+                    <div className="flex flex-1 items-center justify-center gap-6">
+                        <div className="relative w-full max-w-[160px] md:max-w-[240px] group/search">
+                            <button className="flex items-center gap-3 bg-[#2a2e39] hover:bg-[#363a45] px-4 py-2 rounded-full w-full transition-all duration-200 border border-transparent hover:border-[#434651]">
+                                <svg className="w-4 h-4 text-[#b2b5be] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <span className="text-[14px] text-[#b2b5be] font-semibold truncate">Search</span>
+                            </button>
+                        </div>
+
+                        <nav className="hidden xl:flex items-center gap-2 h-[70px]">
+                            {Object.entries(NAV_DATA).map(([item, subItems]) => (
+                                <div key={item} className="relative group/nav h-full flex items-center">
+                                    <button className="px-4 py-2 text-[16px] font-bold text-[#b2b5be] group-hover/nav:text-white transition-all whitespace-nowrap h-full">
+                                        {item}
+                                    </button>
+
+                                    {/* DROPDOWN MENU */}
+                                    <div className="absolute top-[70px] left-0 w-[550px] bg-[#1e222d] border border-[#2a2e39] rounded-xl shadow-2xl opacity-0 invisible group-hover/nav:opacity-100 group-hover/nav:visible transition-all duration-200 p-6 z-[200]">
+                                        <h4 className="text-[11px] font-black text-[#5d606b] uppercase tracking-[0.2em] border-b border-[#2a2e39] pb-3 mb-4">
+                                            {item} Overview
+                                        </h4>
+                                        <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                                            {subItems.map((sub, idx) => (
+                                                <Link key={idx} href="#" className="flex items-start gap-4 p-3 rounded-lg hover:bg-[#2a2e39] transition-all group/item">
+                                                    {/* ICON PLACEHOLDER */}
+                                                    <div className="w-10 h-10 rounded-lg bg-[#2a2e39] group-hover/item:bg-[#363a45] flex-shrink-0 flex items-center justify-center transition-colors">
+                                                        <div className="w-5 h-5 rounded-full bg-[#434651]" />
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-white font-bold group-hover/item:text-[#2962ff] transition-colors leading-tight">
+                                                            {sub.title}
+                                                        </span>
+                                                        <span className="text-[13px] text-[#b2b5be] mt-1 line-clamp-1">
+                                                            {sub.desc}
+                                                        </span>
+                                                    </div>
                                                 </Link>
                                             ))}
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                        ))}
-                    </nav>
-                    <div className="flex space-x-6">
-                        <Link href="https://direct.FMT.group/en/register/ua/cri/2y6ueacdr" target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-xl font-semibold mx-4">
-                            Register
+                                </div>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* RIGHT: Actions */}
+                    <div className="flex items-center gap-6 flex-shrink-0">
+                        <div className="hidden sm:flex items-center gap-4 text-white">
+                            <button className="flex items-center gap-2 hover:text-[#2962ff] transition-colors group">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                </svg>
+                                <span className="text-[15px] font-bold tracking-wide">EN</span>
+                            </button>
+
+                            <Link href="/signin" className="hover:text-[#2962ff] transition-colors">
+                                <svg className="w-7 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" preserveAspectRatio="none">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </Link>
+                        </div>
+
+                        <Link
+                            href="/get-started"
+                            className="trapezoid-btn relative px-5 py-2.5 text-white text-[13px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center justify-center group/btn"
+                        >
+                            <span className="unskew-text group-hover/btn:italic transition-all">Register Now</span>
                         </Link>
-                        <Link href="https://direct.FMT.group/en/login/2y6ueacdr" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-blue-600 text-white rounded-full hover:bg-blue-700 hover:text-white transition text-xl font-semibold mx-4">
-                            Sign in
-                        </Link>
+
+                        <button onClick={() => setOpen(!open)} className="lg:hidden p-1 text-[#b2b5be] hover:text-white transition-all z-[110]">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {open ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
+                            </svg>
+                        </button>
                     </div>
                 </div>
+            </header>
 
-                {/* Mobile controls */}
-                <div className="flex md:hidden items-center space-x-4 mx-2">
-                    <Link href="https://direct.FMT.group/en/register/ua/cri/2y6ueacdr" target="_blank" rel="noopener noreferrer" className="px-6 py-2 bg-blue-600 text-white rounded-full text-base font-semibold hover:bg-blue-700 transition mx-2">
-                        Reg
-                    </Link>
-                    <Link href="https://direct.FMT.group/en/login/2y6ueacdr" target="_blank" rel="noopener noreferrer" className="px-6 py-2 border border-blue-600 text-white rounded-full text-base font-semibold hover:bg-blue-700 hover:text-white transition mx-2">
-                        Sign
-                    </Link>
-                    <button onClick={() => setMobileOpen(!mobileOpen)} className="p-3 bg-white bg-opacity-25 rounded-full focus:outline-none mx-2">
-                        {mobileOpen ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        )}
+            {/* MOBILE MENU */}
+            <div className={`fixed inset-0 bg-[#000000] z-[105] lg:hidden transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}>
+                <nav className="flex flex-col pt-[40px] px-8 gap-4 h-full overflow-y-auto bg-[#000000]">
+                    <button onClick={() => setOpen(false)} className="flex items-center gap-3 text-[#b2b5be] hover:text-white py-6 transition-colors group">
+                        <svg className="w-7 h-7 transition-transform group-hover:-translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <span className="text-lg font-black uppercase tracking-[0.2em]">Back</span>
                     </button>
-                </div>
+
+                    {Object.keys(NAV_DATA).map((item) => (
+                        <Link key={item} href={`/${item.toLowerCase()}`} onClick={() => setOpen(false)} className="text-4xl font-black text-white py-6 border-b border-[#2a2e39] flex justify-between items-center active:bg-white/5 tracking-tighter">
+                            {item}
+                        </Link>
+                    ))}
+
+                    <div className="flex justify-end items-center gap-8 mt-10 pb-10">
+                        <button className="flex items-center gap-3 text-white">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                            </svg>
+                            <span className="text-2xl font-bold">EN</span>
+                        </button>
+                        <Link href="/signin" onClick={() => setOpen(false)} className="text-[#2962ff]">
+                            <svg className="w-11 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24" preserveAspectRatio="none">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </Link>
+                    </div>
+                </nav>
             </div>
 
-            {/* Mobile drawer */}
-            {mobileOpen && (
-                <div className="md:hidden bg-black bg-opacity-90">
-                    <div className="px-4 pb-6 space-y-6">
-                        {NAV_ITEMS.map(menu => (
-                            <div key={menu.label} className="text-center mx-4">
-                                <Link href={menu.href} className="group flex justify-center items-center text-white font-semibold py-3 text-lg mx-4 hover:text-blue-300 transition">
-                                    {menu.label}
-                                    {menu.items.length > 0 && (
-                                        <span className="ml-1 text-sm text-white group-hover:text-blue-300 transition">▼</span>
-                                    )}
-                                </Link>
-                                {menu.items.length > 0 && (
-                                    <div className="pl-2">
-                                        {menu.items.map(item => (
-                                            <Link key={item.title} href={item.href} className="group block text-gray-300 hover:text-blue-300 py-1 text-base mx-4 transition">
-                                                {item.title}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </header>
+            <style>{`
+                .trapezoid-btn {
+                    background: linear-gradient(90deg, #2962ff, #9c27b0, #2962ff);
+                    background-size: 200% auto;
+                    transform: skew(-15deg);
+                    border-radius: 10px;
+                    animation: running-gradient 3s linear infinite;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .unskew-text { transform: skew(15deg); display: block; }
+                @keyframes running-gradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+                @media (max-width: 600px) {
+                    .trapezoid-btn { padding: 8px 18px; font-size: 11px; transform: skew(-10deg); }
+                    .unskew-text { transform: skew(10deg); }
+                }
+            `}</style>
+        </>
     );
 }

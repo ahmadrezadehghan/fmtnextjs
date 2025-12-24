@@ -1,221 +1,144 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
-// Use image paths from the public folder
-const images: string[] = ['/orientation.png', '/tablet.png', '/laptop.png', '/internet.png'];
-const imageTexts: string[] = [
-  "Use FMT broker's mobile apps",
-  "Trade anywhere with tablet support",
-  "Professional trading on your PC",
-  "Access from the web at any time"
+const cardData = [
+  {
+    path: '/orientation.png',
+    text: "Use FMT broker's mobile apps",
+    color: 'from-[#00ffcc] via-[#00d0ff] to-[#00ffcc]',
+    glow: 'rgba(0, 255, 204, 1)', // Solid color for fill
+    theme: '#00ffcc'
+  },
+  {
+    path: '/tablet.png',
+    text: "Trade anywhere with tablet support",
+    color: 'from-[#00d0ff] via-[#bf40ff] to-[#00d0ff]',
+    glow: 'rgba(0, 208, 255, 1)',
+    theme: '#00d0ff'
+  },
+  {
+    path: '/laptop.png',
+    text: "Professional trading on your PC",
+    color: 'from-[#bf40ff] via-[#ff4081] to-[#bf40ff]',
+    glow: 'rgba(191, 64, 255, 1)',
+    theme: '#bf40ff'
+  },
+  {
+    path: '/internet.png',
+    text: "Access from the web at any time",
+    color: 'from-[#ff4081] via-[#00ffcc] to-[#ff4081]',
+    glow: 'rgba(255, 64, 129, 1)',
+    theme: '#ff4081'
+  }
 ];
 
-const CardGlow: React.FC = () => {
+export default function CardGlow() {
+  return (
+    <section className="relative py-24 bg-transparent overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter italic">
+            FLUID <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffcc] via-[#bf40ff] to-[#ff4081] animate-gradient-x not-italic">PLATFORMS</span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {cardData.map((item, index) => (
+            <Card key={index} item={item} index={index} />
+          ))}
+        </div>
+
+        <p className="mt-20 max-w-3xl mx-auto text-center text-lg md:text-xl text-white/40 font-light leading-relaxed">
+          Master forex trading with <span className="text-white font-medium">FMT Broker</span>.
+          Simply click your device to begin trading with sophistication.
+        </p>
+      </div>
+
+      <style>{`
+          @keyframes gradient-x {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+          }
+          .animate-gradient-x {
+              background-size: 200% 200%;
+              animation: gradient-x 5s ease infinite;
+          }
+      `}</style>
+    </section>
+  );
+}
+
+function Card({ item, index }: { item: typeof cardData[0], index: number }) {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left - rect.width / 2;
-    const mouseY = e.clientY - rect.top - rect.height / 2;
-    let angle = Math.atan2(mouseY, mouseX) * (180 / Math.PI);
-    angle = (angle + 360) % 360;
-    e.currentTarget.style.setProperty('--start', (angle + 60).toString());
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
-    <div className="container space-y-12">
-      {/* Cards grid with glow effect */}
-      <div className="cards mt-8">
-        {images.map((path, index) => (
-          <div key={index} className="card" onMouseMove={handleMouseMove}>
-            <div className="glow" />
-            {path ? (
-              <Image
-                src={path}
-                alt={`Card ${index + 1}`}
-                className="card-image"
-                width={200}
-                height={250}
-                onError={(e) => {
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="card-placeholder">Image not available</div>
-            )}
-            <p className="card-text">{imageTexts[index]}</p>
-          </div>
-        ))}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      className="group relative h-full"
+    >
+      {/* Outer Blur Glow behind the card */}
+      <div className={`absolute -inset-2 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 rounded-[2rem]`} />
+
+      <div
+        className="relative z-10 bg-[#080808]/60 backdrop-blur-3xl rounded-[2rem] p-10 h-full flex flex-col items-center justify-center border border-white/5 transition-all duration-500 group-hover:-translate-y-3 group-hover:border-transparent overflow-hidden"
+        style={{
+          /* STRICT TOP AND BOTTOM INNER SHADOW ONLY */
+          boxShadow: `
+            inset 0 40px 40px -30px ${item.theme}66,
+            inset 0 -40px 40px -30px ${item.theme}66
+          `
+        }}
+      >
+        {/* FULL SOLID COLOR FILL ON HOVER */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
+          style={{ backgroundColor: item.theme }}
+        />
+
+        {/* Mouse Follow Light Effect (Visible only on hover) */}
+        <div
+          className="absolute inset-0 z-10 opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: `radial-gradient(300px circle at ${mousePos.x}px ${mousePos.y}px, white, transparent 70%)`,
+          }}
+        />
+
+        {/* Floating Icon Container */}
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="relative z-20 w-24 h-24 mb-8"
+        >
+          <Image
+            src={item.path}
+            alt={item.text}
+            width={96}
+            height={96}
+            className="object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)] group-hover:brightness-0 transition-all duration-500"
+          />
+          {/* Subtle Aura behind icon while unhovered */}
+          <div className={`absolute inset-0 bg-gradient-to-tr ${item.color} rounded-full blur-2xl opacity-10 group-hover:opacity-0 transition-opacity duration-500`} />
+        </motion.div>
+
+        <p className="relative z-20 text-lg font-black text-white/50 group-hover:text-black text-center tracking-tight leading-tight uppercase italic transition-all duration-500">
+          {item.text}
+        </p>
+
+        {/* Dynamic Running Bar */}
+
       </div>
-
-      {/* Explanatory paragraph under cards with padding */}
-      <p className="mt-5 p-5 text-center text-lg md:text-xl text-gray-300 mb-0 pb-0">
-        Master forex trading with FMT Broker—featuring live training, news, training, and expert insights.
-        Simply click your device above to download or visit the store, and begin trading with sophistication
-        and confidence in moments.
-      </p>
-
-      <style jsx>{`
-        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Poppins:wght@400;500&display=swap");
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: "Poppins", sans-serif;
-        }
-
-      .container {
-        margin-bottom: 0;
-        padding: 40px 0 0 0;
-        width: 100%;
-        min-height: auto; /* Changed from 100vh */
-        background-color: transparent;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: clamp(15px, 5vw, 30px);
-        width: 100%;
-        max-width: 1600px;
-        margin-bottom: 0;
-      }
-
-      @media (min-width: 1000px) {
-        .cards {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 1300px) {
-        .cards {
-          grid-template-columns: repeat(4, 1fr);
-          gap: 15px; /* Reduced from clamp */
-        }
-      }
-        .card {
-          --start: 0;
-          position: relative;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border-radius: 14px;
-          padding: clamp(1rem, 5vw, 2rem);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-          transform: scale(1.05);
-        }
-
-        .card-image {
-          width: clamp(4rem, 6vw, 8rem);
-          height: auto;
-          margin-bottom: 20px;
-        }
-
-        .card-placeholder {
-          width: clamp(4rem, 6vw, 8rem);
-          height: clamp(4rem, 6vw, 8rem);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: rgba(255, 255, 255, 0.1);
-          color: rgb(174, 174, 174);
-          border-radius: 8px;
-          margin-bottom: 20px;
-          font-size: clamp(0.75rem, 2vw, 1rem);
-        }
-
-        .card-text {
-          font-size: clamp(1rem, 3vw, 1.25rem);
-          color: rgb(174, 174, 174);
-          font-weight: 500;
-          transition: text-shadow 0.3s ease;
-          margin-top: 20px;
-        }
-
-        .card:hover .card-text {
-          text-shadow:
-            0 0 8px rgba(0, 219, 200, 0.9),
-            0 0 15px rgba(0, 169, 255, 0.8),
-            0 0 20px rgba(148, 88, 255, 0.9);
-        }
-
-        .card::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 14px;
-          background: conic-gradient(
-            from 90deg at 50% 50%,
-            rgba(0, 219, 200, 0.9),
-            rgba(0, 169, 255, 0.8),
-            rgba(148, 88, 255, 0.9)
-          );
-          mask: linear-gradient(#0000, #0000),
-            conic-gradient(
-              from calc((var(--start) - 22) * 1deg),
-              #ffffff1f 0deg,
-              white,
-              #ffffff00 100deg
-            );
-          mask-composite: intersect;
-          mask-clip: padding-box, border-box;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        }
-
-        .card:hover::before {
-          opacity: 0.6;
-        }
-
-        .glow {
-          pointer-events: none;
-          position: absolute;
-          inset: 0;
-          filter: blur(14px);
-        }
-
-        .glow::before {
-          content: "";
-          position: absolute;
-          inset: 1%;
-          border-radius: 14px;
-          border: 15px solid transparent;
-          background: conic-gradient(
-            from 90deg at 50% 50%,
-            rgba(0, 219, 200, 0.8),
-            rgba(0, 169, 255, 0.8),
-            rgba(148, 88, 255, 0.9)
-          );
-          mask: linear-gradient(#0000, #0000),
-            conic-gradient(
-              from calc((var(--start) - 22) * 1deg),
-              #000 0deg,
-              #ffffff,
-              rgba(0, 0, 0, 0) 100deg
-            );
-          mask-composite: intersect;
-          mask-clip: padding-box, border-box;
-          opacity: 0;
-          transition: opacity 1s ease;
-        }
-
-        .card:hover > .glow::before {
-          opacity: 1;
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
-};
-
-export default CardGlow;
+}
